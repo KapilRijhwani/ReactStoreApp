@@ -13,7 +13,6 @@ import Default from "./components/Default";
 function App() {
   return (
     <React.Fragment>
-      <h3>Title</h3>
       <Navbar />
       <Switch>
         <Route exact path="/" component={ProductList} />
