@@ -7,7 +7,7 @@ const ProductContext = React.createContext();
 
 class ProductProvider extends Component {
   state = {
-    cart: [storeProducts],
+    cart: [],
     products: [],
     detailProduct,
     modalOpenFlag: false,
@@ -40,8 +40,30 @@ class ProductProvider extends Component {
     product.inCart = true;
     product.count = 1;
     product.total = product.price;
+    this.setState(
+      () => {
+        return { products: tempProducts, cart: [...this.state.cart, product] };
+      },
+      () => {
+        this.addTotals();
+      }
+    );
+  };
+
+  addTotals = () => {
+    let subTotal = 0;
+    this.state.cart.map(product => {
+      subTotal += product.price;
+    });
+    let tempTax = subTotal * 0.1;
+    let tax = parseFloat(tempTax.toFixed(2));
+    let total = subTotal + tax;
     this.setState(() => {
-      return { product: tempProducts, cart: [...this.state.cart, product] };
+      return {
+        cartSubTotal: subTotal,
+        cartTax: tax,
+        cartTotal: total
+      };
     });
   };
 
@@ -59,7 +81,6 @@ class ProductProvider extends Component {
 
   openModal = id => {
     const product = this.getItem(id);
-    console.log("open modal: " + id + ":::" + product);
     this.setState(() => {
       return { modalOpenFlag: true, modalProduct: product };
     });
@@ -80,9 +101,40 @@ class ProductProvider extends Component {
 
   decrementItem = id => {};
 
-  clearCart = () => {};
+  clearCart = () => {
+    console.log("clearcartt");
+    this.setState(
+      () => {
+        return { cart: [] };
+      },
+      () => {
+        this.setProducts();
+        this.addTotals();
+      }
+    );
+  };
 
-  removeItem = id => {};
+  removeItem = id => {
+    let tempProducts = [...this.state.products];
+    let tempCart = [...this.state.cart];
+
+    tempCart = tempCart.filter(product => product.id !== id);
+
+    let removedProduct = this.getItem(id);
+    let indexRemovedProd = tempProducts.indexOf(removedProduct);
+    removedProduct = tempProducts[indexRemovedProd];
+    removedProduct.inCart = false;
+    removedProduct.count = 0;
+    removedProduct.total = 0;
+    this.setState(
+      () => {
+        return { cart: [...tempCart], products: [...tempProducts] };
+      },
+      () => {
+        this.addTotals();
+      }
+    );
+  };
 
   render() {
     return (
