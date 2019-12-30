@@ -40,6 +40,14 @@ export default function CartItem({ item, value }) {
           </div>
         </div>
       </div>
+      <div className="col-10 mx-auto col-lg-2">
+        <div className="cart-trash" onClick={() => removeItem(id)}>
+          <i className="fas fa-trash" />
+        </div>
+      </div>
+      <div className="col-10 mx-auto col-lg-2">
+        <strong> item total : $ {total}</strong>
+      </div>
     </div>
   );
 }
