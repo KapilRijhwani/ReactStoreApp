@@ -12,10 +12,8 @@ export default class Modal extends Component {
           const { closeModal, modalOpenFlag } = value;
           const { img, price, title } = value.modalProduct;
           if (!modalOpenFlag) {
-            console.log("modal opeen flag: " + modalOpenFlag);
             return null;
           } else {
-            console.log("modal opeen flag: " + modalOpenFlag);
             return (
               <ModalContainer>
                 <div className="container">

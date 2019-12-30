@@ -53,7 +53,7 @@ class ProductProvider extends Component {
   addTotals = () => {
     let subTotal = 0;
     this.state.cart.map(product => {
-      subTotal += product.price;
+      subTotal += product.total;
     });
     let tempTax = subTotal * 0.1;
     let tax = parseFloat(tempTax.toFixed(2));
@@ -93,16 +93,44 @@ class ProductProvider extends Component {
   };
 
   incrementItem = id => {
-    const product = this.getItem(id);
+    let tempCart = [...this.state.cart];
+    let selectedProduct = tempCart.find(product => product.id === id);
+    let index = tempCart.indexOf(selectedProduct);
+    let product = tempCart[index];
     product.count = product.count + 1;
     product.total = product.count * product.price;
-    this.setState(() => {});
+    this.setState(
+      () => {
+        return { cart: [...tempCart] };
+      },
+      () => {
+        this.addTotals();
+      }
+    );
   };
 
-  decrementItem = id => {};
+  decrementItem = id => {
+    let tempCart = [...this.state.cart];
+    let selectedProduct = tempCart.find(product => product.id === id);
+    let index = tempCart.indexOf(selectedProduct);
+    let product = tempCart[index];
+    product.count = product.count - 1;
+    if (product.count === 0) {
+      this.removeItem(id);
+    } else {
+      product.total = product.count * product.price;
+      this.setState(
+        () => {
+          return { cart: [...tempCart] };
+        },
+        () => {
+          this.addTotals();
+        }
+      );
+    }
+  };
 
   clearCart = () => {
-    console.log("clearcartt");
     this.setState(
       () => {
         return { cart: [] };
